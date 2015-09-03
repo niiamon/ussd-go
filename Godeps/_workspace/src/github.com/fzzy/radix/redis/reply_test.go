@@ -3,7 +3,7 @@ package redis
 import (
 	. "testing"
 
-	"github.com/sanepay/smsghussd/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 )
 
 func TestStr(t *T) {

@@ -1,9 +1,6 @@
 {
-	"ImportPath": "github.com/sanepay/smsghussd",
-	"GoVersion": "go1.4.2",
-	"Packages": [
-		"./..."
-	],
+	"ImportPath": "github.com/samora/ussd-go",
+	"GoVersion": "go1.5",
 	"Deps": [
 		{
 			"ImportPath": "github.com/fzzy/radix/redis",

@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/sanepay/smsghussd/Godeps/_workspace/src/github.com/stretchr/testify/assert"
-	"github.com/sanepay/smsghussd/Godeps/_workspace/src/github.com/stretchr/testify/require"
+	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/require"
 )
 
 var matchMethod = flag.String("m", "", "regular expression to select tests of the suite to run")

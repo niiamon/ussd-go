@@ -6,7 +6,7 @@ import (
 	. "testing"
 	"time"
 
-	"github.com/sanepay/smsghussd/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 )
 
 func dial(t *T) *Client {
