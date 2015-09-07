@@ -38,32 +38,32 @@ func (u *UssdSuite) TestUssd() {
 	u.Equal(1, len(u.ussd.middlewares))
 	u.Equal(2, len(u.ussd.ctrls))
 
-	response := u.ussd.Process(u.request)
+	response := u.ussd.process(u.request)
 	u.Equal(strResponse, response.Type)
 	u.Contains(response.Message, "Welcome")
 
 	u.request.Message = "1"
 	u.request.Type = strResponse
-	response = u.ussd.Process(u.request)
+	response = u.ussd.process(u.request)
 	u.Equal(strResponse, response.Type)
 	u.Contains(response.Message, "Enter Name")
 
 	u.request.Message = "Samora"
-	response = u.ussd.Process(u.request)
+	response = u.ussd.process(u.request)
 	u.Equal(strResponse, response.Type)
 	u.Contains(response.Message, "Select Sex")
 
 	u.request.Message = "1"
-	response = u.ussd.Process(u.request)
+	response = u.ussd.process(u.request)
 	u.Equal(strRelease, response.Type)
 	u.Contains(response.Message, "Master Samora")
 
 	u.request.Message = u.request.ServiceCode
 	u.request.Type = strInitiation
-	u.ussd.Process(u.request)
+	u.ussd.process(u.request)
 	u.request.Message = "0"
 	u.request.Type = strResponse
-	response = u.ussd.Process(u.request)
+	response = u.ussd.process(u.request)
 	u.Equal(strRelease, response.Type)
 	u.Equal("Bye bye.", response.Message)
 }

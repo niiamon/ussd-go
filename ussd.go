@@ -79,7 +79,7 @@ func (u *Ussd) Ctrl(c interface{}) {
 }
 
 // Process USSD request.
-func (u *Ussd) Process(request *Request) *Response {
+func (u *Ussd) process(request *Request) *Response {
 	uCopy := new(Ussd)
 	*uCopy = *u
 	err := uCopy.store.Connect()
@@ -108,11 +108,11 @@ func (u *Ussd) Process(request *Request) *Response {
 
 // ProcessWithAdapters processes USSD using adapters
 func (u *Ussd) ProcessWithAdapters(request RequestAdapter, response ResponseAdapter) {
-	res := u.Process(request.GetRequest())
+	res := u.process(request.GetRequest())
 	response.SetResponse(res)
 }
 
-// ProcessSmsgh processes USSD requests from SMSGH
+// ProcessSmsgh processes USSD from SMSGH
 func (u *Ussd) ProcessSmsgh(request *SmsghRequest) *SmsghResponse {
 	response := new(SmsghResponse)
 	u.ProcessWithAdapters(request, response)
