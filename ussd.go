@@ -20,17 +20,16 @@ type route struct {
 	Ctrl, Action string
 }
 
-// Request from SMSGH USSD platform
+// Request from USSD.
 type Request struct {
 	Mobile      string
-	SessionId   string
 	ServiceCode string
 	Type        string
 	Message     string
 	Operator    string
 }
 
-// Response to USSD request.
+// Response to USSD.
 type Response struct {
 	Type, Message, ClientState, state string
 	route                             route
@@ -105,6 +104,19 @@ func (u *Ussd) Process(request *Request) *Response {
 	}
 
 	return uCopy.exec()
+}
+
+// ProcessWithAdapters processes USSD using adapters
+func (u *Ussd) ProcessWithAdapters(request RequestAdapter, response ResponseAdapter) {
+	res := u.Process(request.GetRequest())
+	response.SetResponse(res)
+}
+
+// ProcessSmsgh processes USSD requests from SMSGH
+func (u *Ussd) ProcessSmsgh(request *SmsghRequest) *SmsghResponse {
+	response := new(SmsghResponse)
+	u.ProcessWithAdapters(request, response)
+	return response
 }
 
 func (u *Ussd) exec() *Response {

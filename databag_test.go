@@ -23,7 +23,6 @@ func (d *DataBagSuite) SetupSuite() {
 	d.request.Mobile = "233246662003"
 	d.request.Operator = "vodafone"
 	d.request.ServiceCode = "*123#"
-	d.request.SessionId = StrRandom(10)
 	d.request.Type = strInitiation
 	d.request.Message = d.request.ServiceCode
 	d.key = "name"

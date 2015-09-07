@@ -19,7 +19,6 @@ func (u *UssdSuite) SetupSuite() {
 	u.request.Mobile = "233246662003"
 	u.request.Operator = "vodafone"
 	u.request.ServiceCode = "*123#"
-	u.request.SessionId = StrRandom(10)
 	u.request.Type = strInitiation
 	u.request.Message = u.request.ServiceCode
 
@@ -61,7 +60,6 @@ func (u *UssdSuite) TestUssd() {
 
 	u.request.Message = u.request.ServiceCode
 	u.request.Type = strInitiation
-	u.request.SessionId = StrRandom(10)
 	u.ussd.Process(u.request)
 	u.request.Message = "0"
 	u.request.Type = strResponse
