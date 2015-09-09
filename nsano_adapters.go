@@ -1,5 +1,9 @@
 package ussd
 
+import (
+	"net/url"
+)
+
 type NsanoRequest struct {
 	MSISDN  string `json:"msisdn"`
 	Network string `json:"network"`
@@ -7,10 +11,18 @@ type NsanoRequest struct {
 }
 
 func (n *NsanoRequest) GetRequest() *Request {
+	message, err := url.QueryUnescape(n.Message)
+	if err != nil {
+		message = n.Message
+	}
+	network, err := url.QueryUnescape(n.Network)
+	if err != nil {
+		network = n.Network
+	}
 	return &Request{
 		Mobile:  n.MSISDN,
-		Message: n.Message,
-		Network: n.Network,
+		Message: message,
+		Network: network,
 	}
 }
 
