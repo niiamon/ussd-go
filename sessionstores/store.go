@@ -1,5 +1,9 @@
 package sessionstores
 
+const (
+	ExpiryTime = 35
+)
+
 // Store interface should be implemented by all session stores
 // ussd supports.
 type Store interface {

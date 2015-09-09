@@ -43,11 +43,21 @@ func (s *Redis) Connect() error {
 }
 
 func (s *Redis) SetValue(key, value string) error {
-	return s.client.Cmd("SET", key, value).Err
+	err := s.client.Cmd("SET", key, value).Err
+	if err != nil {
+		return err
+	}
+	s.client.Cmd("EXPIRE", key, ExpiryTime)
+	return nil
 }
 
 func (s *Redis) GetValue(key string) (string, error) {
-	return s.client.Cmd("GET", key).Str()
+	str, err := s.client.Cmd("GET", key).Str()
+	if err != nil {
+		return str, err
+	}
+	s.client.Cmd("EXPIRE", key, ExpiryTime)
+	return str, err
 }
 
 func (s *Redis) ValueExists(key string) (bool, error) {
@@ -59,11 +69,21 @@ func (s *Redis) DeleteValue(key string) error {
 }
 
 func (s *Redis) HashSetValue(name, key, value string) error {
-	return s.client.Cmd("HSET", name, key, value).Err
+	err := s.client.Cmd("HSET", name, key, value).Err
+	if err != nil {
+		return err
+	}
+	s.client.Cmd("EXPIRE", name, ExpiryTime)
+	return nil
 }
 
 func (s *Redis) HashGetValue(name, key string) (string, error) {
-	return s.client.Cmd("HGET", name, key).Str()
+	str, err := s.client.Cmd("HGET", name, key).Str()
+	if err != nil {
+		return str, err
+	}
+	s.client.Cmd("EXPIRE", name, ExpiryTime)
+	return str, err
 }
 
 func (s *Redis) HashValueExists(name, key string) (bool, error) {
