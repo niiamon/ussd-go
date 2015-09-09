@@ -39,7 +39,7 @@ func (u *UssdSuite) TestUssd() {
 	u.Equal(2, len(u.ussd.ctrls))
 
 	response := u.ussd.process(u.request)
-	u.Equal(strResponse, response.Type)
+	u.False(response.Release)
 	u.Contains(response.Message, "Welcome")
 
 	u.request.Message = "1"
@@ -48,12 +48,12 @@ func (u *UssdSuite) TestUssd() {
 
 	u.request.Message = "Samora"
 	response = u.ussd.process(u.request)
-	u.Equal(strResponse, response.Type)
+	u.False(response.Release)
 	u.Contains(response.Message, "Select Sex")
 
 	u.request.Message = "1"
 	response = u.ussd.process(u.request)
-	u.Equal(strRelease, response.Type)
+	u.True(response.Release)
 	u.Contains(response.Message, "Master Samora")
 
 	u.request.Message = "*123*"

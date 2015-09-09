@@ -18,9 +18,14 @@ func (s *SmsghRequest) GetRequest() *Request {
 }
 
 type SmsghResponse struct {
-	*Response
+	Type, Message string
 }
 
 func (s *SmsghResponse) SetResponse(response *Response) {
-	s.Response = response
+	s.Message = response.Message
+	if response.Release {
+		s.Type = "Release"
+	} else {
+		s.Type = "Response"
+	}
 }

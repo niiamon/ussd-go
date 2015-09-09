@@ -21,9 +21,8 @@ func (f FormData) Exists() bool {
 // Release USSD session.
 func (c *Context) Release(msg string) *Response {
 	r := new(Response)
-	r.Type = strRelease
 	r.Message = StrTrim(msg)
-	r.state = strRelease
+	r.Release = true
 	return r
 }
 
@@ -31,10 +30,8 @@ func (c *Context) Release(msg string) *Response {
 // input which will be mapped to specified route.
 func (c *Context) Render(msg, ctrl, action string) *Response {
 	r := new(Response)
-	r.Type = strResponse
 	r.Message = StrTrim(msg)
 	r.route = route{StrTrim(ctrl), StrTrim(action)}
-	r.state = strResponse
 	return r
 }
 
@@ -64,16 +61,14 @@ func (c *Context) RenderForm(form *Form, ctrl, action string) *Response {
 func (c *Context) Redirect(ctrl, action string) *Response {
 	r := new(Response)
 	r.route = route{StrTrim(ctrl), StrTrim(action)}
-	r.state = strRedirect
+	r.redirect = true
 	return r
 }
 
 // Err releases USSD session with an error message.
 func (c *Context) Err(err error) *Response {
 	r := new(Response)
-	r.Type = strRelease
 	r.Message = err.Error()
 	r.err = err
-	r.state = strError
 	return r
 }

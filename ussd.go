@@ -30,9 +30,10 @@ type Request struct {
 
 // Response to USSD.
 type Response struct {
-	Type, Message, ClientState, state string
-	route                             route
-	err                               error
+	Message           string
+	Release, redirect bool
+	err               error
+	route             route
 }
 
 // Ussd sets up USSD.
@@ -120,6 +121,13 @@ func (u *Ussd) ProcessSmsgh(request *SmsghRequest) *SmsghResponse {
 	return response
 }
 
+// ProcessNsano processes USSD from Nsano
+func (u *Ussd) ProcessNsano(request *NsanoRequest) *NsanoResponse {
+	response := new(NsanoResponse)
+	u.ProcessWithAdapters(request, response)
+	return response
+}
+
 func (u *Ussd) exec() *Response {
 	response := new(Response)
 	if u.context.Request.Message == "" {
@@ -149,18 +157,18 @@ func (u *Ussd) onResponse() *Response {
 		r := u.session.Get()
 
 		res := u.execHandler(r)
-		switch state := res.state; state {
-		case strRedirect:
+		if res.err != nil {
+			log.Println(res.err)
+			u.end()
+			return res
+		}
+		if res.redirect {
 			r = route{res.route.Ctrl, res.route.Action}
 			u.session.Set(r)
 			continue
-		case strResponse:
+		}
+		if !res.Release {
 			u.session.Set(res.route)
-		case strError:
-			log.Println(res.err)
-			fallthrough
-		default:
-			u.end()
 		}
 		return res
 	}
