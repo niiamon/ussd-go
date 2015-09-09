@@ -3,6 +3,7 @@ package ussd
 import (
 	"log"
 	"reflect"
+	"regexp"
 
 	"github.com/samora/ussd-go/sessionstores"
 )
@@ -22,11 +23,9 @@ type route struct {
 
 // Request from USSD.
 type Request struct {
-	Mobile      string
-	ServiceCode string
-	Type        string
-	Message     string
-	Operator    string
+	Mobile  string
+	Message string
+	Network string
 }
 
 // Response to USSD.
@@ -38,21 +37,23 @@ type Response struct {
 
 // Ussd sets up USSD.
 type Ussd struct {
-	initialRoute route
-	session      *session
-	store        sessionstores.Store
-	middlewares  []Middleware
-	ctrls        map[string]interface{}
-	context      *Context
+	initialRoute    route
+	session         *session
+	store           sessionstores.Store
+	middlewares     []Middleware
+	ctrls           map[string]interface{}
+	context         *Context
+	initiationRegex *regexp.Regexp
 }
 
 // New USSD
 func New(store sessionstores.Store, ctrl, action string) *Ussd {
 	u := &Ussd{
-		initialRoute: route{StrTrim(ctrl), StrTrim(action)},
-		store:        store,
-		middlewares:  make([]Middleware, 0),
-		ctrls:        make(map[string]interface{}),
+		initialRoute:    route{StrTrim(ctrl), StrTrim(action)},
+		store:           store,
+		middlewares:     make([]Middleware, 0),
+		ctrls:           make(map[string]interface{}),
+		initiationRegex: regexp.MustCompile(`^\*\d+[\*|#]`),
 	}
 	u.Ctrl(new(core))
 	return u
@@ -121,15 +122,14 @@ func (u *Ussd) ProcessSmsgh(request *SmsghRequest) *SmsghResponse {
 
 func (u *Ussd) exec() *Response {
 	response := new(Response)
-	switch StrLower(u.context.Request.Type) {
-	case StrLower(strInitiation):
-		response = u.onInitiation()
-	case StrLower(strResponse):
-		response = u.onResponse()
-	default:
+	if u.context.Request.Message == "" {
 		u.end()
+		return response
 	}
-	return response
+	if u.initiationRegex.MatchString(u.context.Request.Message) == true {
+		return u.onInitiation()
+	}
+	return u.onResponse()
 }
 
 func (u *Ussd) onInitiation() *Response {

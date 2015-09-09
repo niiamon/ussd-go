@@ -7,6 +7,8 @@ import (
 	"github.com/samora/ussd-go/sessionstores"
 )
 
+const DummyServiceCode = "*123#"
+
 type UssdSuite struct {
 	suite.Suite
 	ussd    *Ussd
@@ -17,10 +19,8 @@ type UssdSuite struct {
 func (u *UssdSuite) SetupSuite() {
 	u.request = &Request{}
 	u.request.Mobile = "233246662003"
-	u.request.Operator = "vodafone"
-	u.request.ServiceCode = "*123#"
-	u.request.Type = strInitiation
-	u.request.Message = u.request.ServiceCode
+	u.request.Network = "vodafone"
+	u.request.Message = DummyServiceCode
 
 	u.store = sessionstores.NewRedis("localhost:6379")
 
@@ -43,9 +43,7 @@ func (u *UssdSuite) TestUssd() {
 	u.Contains(response.Message, "Welcome")
 
 	u.request.Message = "1"
-	u.request.Type = strResponse
 	response = u.ussd.process(u.request)
-	u.Equal(strResponse, response.Type)
 	u.Contains(response.Message, "Enter Name")
 
 	u.request.Message = "Samora"
@@ -58,13 +56,10 @@ func (u *UssdSuite) TestUssd() {
 	u.Equal(strRelease, response.Type)
 	u.Contains(response.Message, "Master Samora")
 
-	u.request.Message = u.request.ServiceCode
-	u.request.Type = strInitiation
+	u.request.Message = "*123*"
 	u.ussd.process(u.request)
 	u.request.Message = "0"
-	u.request.Type = strResponse
 	response = u.ussd.process(u.request)
-	u.Equal(strRelease, response.Type)
 	u.Equal("Bye bye.", response.Message)
 }
 

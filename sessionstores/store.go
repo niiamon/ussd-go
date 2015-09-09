@@ -1,7 +1,7 @@
 package sessionstores
 
 const (
-	ExpiryTime = 35
+	ExpiryTime = 300
 )
 
 // Store interface should be implemented by all session stores

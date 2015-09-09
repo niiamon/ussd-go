@@ -21,10 +21,8 @@ func (d *DataBagSuite) SetupSuite() {
 	d.Nil(err)
 	d.request = &Request{}
 	d.request.Mobile = "233246662003"
-	d.request.Operator = "vodafone"
-	d.request.ServiceCode = "*123#"
-	d.request.Type = strInitiation
-	d.request.Message = d.request.ServiceCode
+	d.request.Network = "vodafone"
+	d.request.Message = "*123#"
 	d.key = "name"
 	d.value = "Samora"
 	d.databag = newDataBag(d.store, d.request)
