@@ -89,6 +89,7 @@ func (u *Ussd) process(request *Request) *Response {
 		log.Panicln(err)
 	}
 	defer uCopy.store.Close()
+	request.Network = StrLower(request.Network)
 	request.Message = StrTrim(request.Message)
 
 	// setup context
