@@ -15,16 +15,17 @@ func (n *NsanoRequest) GetRequest() *Request {
 }
 
 type NsanoResponse struct {
-	USSDResp *nsanoResponseContent
+	USSDResp *ussdResp
 }
 
-type nsanoResponseContent struct {
+type ussdResp struct {
 	Action string `json:"action"`
 	Menus  string `json:"menus"`
 	Title  string `json:"title"`
 }
 
 func (n *NsanoResponse) SetResponse(response *Response) {
+	n.USSDResp = new(ussdResp)
 	n.USSDResp.Title = response.Message
 	if response.Release {
 		n.USSDResp.Action = "prompt"
