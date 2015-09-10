@@ -67,8 +67,7 @@ func (c *Context) Redirect(ctrl, action string) *Response {
 
 // Err releases USSD session with an error message.
 func (c *Context) Err(err error) *Response {
-	r := new(Response)
-	r.Message = err.Error()
+	r := c.Release("Sorry, something went wrong")
 	r.err = err
 	return r
 }
