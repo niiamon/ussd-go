@@ -26,9 +26,10 @@ type ussdResp struct {
 
 func (n *NsanoResponse) SetResponse(response *Response) {
 	if response.Release {
-		n.USSDResp.Menus = response.Message
 		n.USSDResp.Action = "prompt"
+		n.USSDResp.Menus = response.Message
 	} else {
 		n.USSDResp.Action = "input"
+		n.USSDResp.Title = response.Message
 	}
 }
