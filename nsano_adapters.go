@@ -1,9 +1,5 @@
 package ussd
 
-import (
-	"net/url"
-)
-
 type NsanoRequest struct {
 	MSISDN  string `json:"msisdn"`
 	Network string `json:"network"`
@@ -11,23 +7,15 @@ type NsanoRequest struct {
 }
 
 func (n *NsanoRequest) GetRequest() *Request {
-	message, err := url.QueryUnescape(n.Message)
-	if err != nil {
-		message = n.Message
-	}
-	network, err := url.QueryUnescape(n.Network)
-	if err != nil {
-		network = n.Network
-	}
 	return &Request{
 		Mobile:  n.MSISDN,
-		Message: message,
-		Network: network,
+		Message: n.Message,
+		Network: n.Network,
 	}
 }
 
 type NsanoResponse struct {
-	USSDResp *ussdResp
+	USSDResp ussdResp
 }
 
 type ussdResp struct {
@@ -37,9 +25,8 @@ type ussdResp struct {
 }
 
 func (n *NsanoResponse) SetResponse(response *Response) {
-	n.USSDResp = new(ussdResp)
-	n.USSDResp.Title = response.Message
 	if response.Release {
+		n.USSDResp.Menus = response.Message
 		n.USSDResp.Action = "prompt"
 	} else {
 		n.USSDResp.Action = "input"
