@@ -40,7 +40,7 @@ func (m *Menu) AddZeroItem(name, ctrl, action string) *Menu {
 }
 
 // Render USSD menu.
-func (m *Menu) Render() string {
+func (m Menu) Render() string {
 	msg := StrEmpty
 	if m.Header != StrEmpty {
 		msg += m.Header + StrNewLine

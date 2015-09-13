@@ -7,6 +7,10 @@ import (
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/fzzy/radix/redis"
 )
 
+const (
+	redisKeyExpiryTime = 300
+)
+
 // Redis session store. See http://redis.io
 type Redis struct {
 	address, password string
@@ -47,7 +51,7 @@ func (s *Redis) SetValue(key, value string) error {
 	if err != nil {
 		return err
 	}
-	s.client.Cmd("EXPIRE", key, ExpiryTime)
+	s.client.Cmd("EXPIRE", key, redisKeyExpiryTime)
 	return nil
 }
 
@@ -56,7 +60,7 @@ func (s *Redis) GetValue(key string) (string, error) {
 	if err != nil {
 		return str, err
 	}
-	s.client.Cmd("EXPIRE", key, ExpiryTime)
+	s.client.Cmd("EXPIRE", key, redisKeyExpiryTime)
 	return str, err
 }
 
@@ -73,7 +77,7 @@ func (s *Redis) HashSetValue(name, key, value string) error {
 	if err != nil {
 		return err
 	}
-	s.client.Cmd("EXPIRE", name, ExpiryTime)
+	s.client.Cmd("EXPIRE", name, redisKeyExpiryTime)
 	return nil
 }
 
@@ -82,7 +86,7 @@ func (s *Redis) HashGetValue(name, key string) (string, error) {
 	if err != nil {
 		return str, err
 	}
-	s.client.Cmd("EXPIRE", name, ExpiryTime)
+	s.client.Cmd("EXPIRE", name, redisKeyExpiryTime)
 	return str, err
 }
 

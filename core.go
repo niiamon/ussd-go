@@ -11,7 +11,7 @@ type core struct {
 }
 
 // MenuProcessor processes a menu rendered from Context.RenderMenu
-func (cr *core) MenuProcessor(c *Context) *Response {
+func (cr core) MenuProcessor(c *Context) Response {
 	str, err := c.DataBag.Get(coredataMenu)
 	if err != nil {
 		return c.Err(err)
@@ -40,7 +40,7 @@ func (cr *core) MenuProcessor(c *Context) *Response {
 }
 
 // FormInputDisplay displays inputs rendered from Context.RenderForm
-func (cr *core) FormInputDisplay(c *Context) *Response {
+func (cr core) FormInputDisplay(c *Context) Response {
 	form, err := getForm(c)
 	if err != nil {
 		return c.Err(err)
@@ -73,7 +73,7 @@ func (cr *core) FormInputDisplay(c *Context) *Response {
 	return c.Render(msg, "core", "FormInputProcessor")
 }
 
-func (cr *core) FormInputProcessor(c *Context) *Response {
+func (cr core) FormInputProcessor(c *Context) Response {
 	form, err := getForm(c)
 	if err != nil {
 		return c.Err(err)

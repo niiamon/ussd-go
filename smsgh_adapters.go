@@ -21,7 +21,7 @@ type SmsghResponse struct {
 	Type, Message string
 }
 
-func (s *SmsghResponse) SetResponse(response *Response) {
+func (s *SmsghResponse) SetResponse(response Response) {
 	s.Message = response.Message
 	if response.Release {
 		s.Type = "Release"

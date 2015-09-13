@@ -8,7 +8,7 @@ import (
 type demo struct {
 }
 
-func (d *demo) Menu(c *Context) *Response {
+func (d demo) Menu(c *Context) Response {
 	menu := NewMenu()
 	menu.Header = "Welcome"
 	menu.AddItem("Greet me", "demo", "GreetMeForm")
@@ -17,7 +17,7 @@ func (d *demo) Menu(c *Context) *Response {
 	return c.RenderMenu(menu)
 }
 
-func (d *demo) GreetMeForm(c *Context) *Response {
+func (d demo) GreetMeForm(c *Context) Response {
 	form := NewForm("Greet Me")
 	form.AddInput("Name", StrEmpty)
 	form.AddInput("Sex", StrEmpty,
@@ -26,7 +26,7 @@ func (d *demo) GreetMeForm(c *Context) *Response {
 	return c.RenderForm(form, "demo", "GreetMe")
 }
 
-func (d *demo) GreetMe(c *Context) *Response {
+func (d demo) GreetMe(c *Context) Response {
 	prefix := StrEmpty
 	if c.FormData["Sex"] == "M" {
 		prefix = "Master"
@@ -37,7 +37,7 @@ func (d *demo) GreetMe(c *Context) *Response {
 	return c.Release(msg)
 }
 
-func (d *demo) Exit(c *Context) *Response {
+func (d *demo) Exit(c *Context) Response {
 	return c.Release("Bye bye.")
 }
 

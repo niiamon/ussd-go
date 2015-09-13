@@ -45,7 +45,7 @@ func NewInput(name, displayName string) *Input {
 }
 
 // HasOptions checks if input has options.
-func (i *Input) HasOptions() bool {
+func (i Input) HasOptions() bool {
 	return len(i.Options) > 0
 }
 

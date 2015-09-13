@@ -8,9 +8,6 @@ import (
 	"github.com/samora/ussd-go/sessionstores"
 )
 
-// Action func
-type Action func() Response
-
 // Middleware func
 type Middleware func(*Context)
 
@@ -23,9 +20,7 @@ type route struct {
 
 // Request from USSD.
 type Request struct {
-	Mobile  string
-	Message string
-	Network string
+	Mobile, Message, Network string
 }
 
 // Response to USSD.
@@ -81,59 +76,57 @@ func (u *Ussd) Ctrl(c interface{}) {
 }
 
 // Process USSD request.
-func (u *Ussd) process(request *Request) *Response {
-	uCopy := new(Ussd)
-	*uCopy = *u
-	err := uCopy.store.Connect()
+func (u Ussd) process(request *Request) Response {
+	err := u.store.Connect()
 	if err != nil {
 		log.Panicln(err)
 	}
-	defer uCopy.store.Close()
+	defer u.store.Close()
+
 	request.Network = StrLower(request.Network)
 	request.Message = StrTrim(request.Message)
 
 	// setup context
-	uCopy.context = new(Context)
-	uCopy.context.DataBag = newDataBag(uCopy.store, request)
-	uCopy.context.Data = make(Data)
-	uCopy.context.Request = request
+	u.context = new(Context)
+	u.context.DataBag = newDataBag(u.store, request)
+	u.context.Data = make(Data)
+	u.context.Request = request
 
 	// setup session
-	uCopy.session = newSession(uCopy.store, uCopy.context.Request)
+	u.session = newSession(u.store, u.context.Request)
 
 	// execute middlewares
-	for _, m := range uCopy.middlewares {
-		m(uCopy.context)
+	for _, m := range u.middlewares {
+		m(u.context)
 	}
 
-	return uCopy.exec()
+	return u.exec()
 }
 
-// ProcessWithAdapters processes USSD using adapters
-func (u *Ussd) ProcessWithAdapters(request RequestAdapter, response ResponseAdapter) {
+// Process USSD using adapters
+func (u Ussd) Process(request RequestAdapter, response ResponseAdapter) {
 	res := u.process(request.GetRequest())
 	response.SetResponse(res)
 }
 
 // ProcessSmsgh processes USSD from SMSGH
-func (u *Ussd) ProcessSmsgh(request *SmsghRequest) *SmsghResponse {
-	response := new(SmsghResponse)
-	u.ProcessWithAdapters(request, response)
+func (u Ussd) ProcessSmsgh(request *SmsghRequest) SmsghResponse {
+	response := SmsghResponse{}
+	u.Process(request, &response)
 	return response
 }
 
 // ProcessNsano processes USSD from Nsano
-func (u *Ussd) ProcessNsano(request *NsanoRequest) *NsanoResponse {
-	response := new(NsanoResponse)
-	u.ProcessWithAdapters(request, response)
+func (u Ussd) ProcessNsano(request *NsanoRequest) NsanoResponse {
+	response := NsanoResponse{}
+	u.Process(request, &response)
 	return response
 }
 
-func (u *Ussd) exec() *Response {
-	response := new(Response)
+func (u Ussd) exec() Response {
 	if u.context.Request.Message == "" {
 		u.end()
-		return response
+		return Response{}
 	}
 	if u.initiationRegex.MatchString(u.context.Request.Message) == true {
 		return u.onInitiation()
@@ -141,14 +134,14 @@ func (u *Ussd) exec() *Response {
 	return u.onResponse()
 }
 
-func (u *Ussd) onInitiation() *Response {
+func (u Ussd) onInitiation() Response {
 	u.end()
 	r := route{u.initialRoute.Ctrl, u.initialRoute.Action}
 	u.session.Set(r)
 	return u.onResponse()
 }
 
-func (u *Ussd) onResponse() *Response {
+func (u Ussd) onResponse() Response {
 	for {
 		exists := u.session.Exists()
 		if !exists {
@@ -175,12 +168,12 @@ func (u *Ussd) onResponse() *Response {
 	}
 }
 
-func (u *Ussd) end() {
+func (u Ussd) end() {
 	u.context.DataBag.Clear()
 	u.session.Close()
 }
 
-func (u *Ussd) execHandler(r route) *Response {
+func (u Ussd) execHandler(r route) Response {
 	c, ok := u.ctrls[r.Ctrl]
 	if !ok {
 		panicln("ussd: %v ctrl not found", r.Ctrl)
@@ -193,7 +186,7 @@ func (u *Ussd) execHandler(r route) *Response {
 	args := []reflect.Value{
 		reflect.ValueOf(c), reflect.ValueOf(u.context)}
 	rv := m.Func.Call(args)[0]
-	res, ok := rv.Interface().(*Response)
+	res, ok := rv.Interface().(Response)
 	if !ok {
 		panicln("ussd: %v action on %v ctrl must return Response",
 			r.Ctrl, r.Action)

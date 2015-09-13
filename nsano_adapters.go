@@ -24,7 +24,7 @@ type ussdResp struct {
 	Title  string `json:"title"`
 }
 
-func (n *NsanoResponse) SetResponse(response *Response) {
+func (n *NsanoResponse) SetResponse(response Response) {
 	if response.Release {
 		n.USSDResp.Action = "prompt"
 		n.USSDResp.Menus = response.Message

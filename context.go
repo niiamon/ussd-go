@@ -19,8 +19,8 @@ func (f FormData) Exists() bool {
 }
 
 // Release USSD session.
-func (c *Context) Release(msg string) *Response {
-	r := new(Response)
+func (c Context) Release(msg string) Response {
+	r := Response{}
 	r.Message = StrTrim(msg)
 	r.Release = true
 	return r
@@ -28,8 +28,8 @@ func (c *Context) Release(msg string) *Response {
 
 // Render to USSD client. Expects USSD client to respond with
 // input which will be mapped to specified route.
-func (c *Context) Render(msg, ctrl, action string) *Response {
-	r := new(Response)
+func (c Context) Render(msg, ctrl, action string) Response {
+	r := Response{}
 	r.Message = StrTrim(msg)
 	r.route = route{StrTrim(ctrl), StrTrim(action)}
 	return r
@@ -37,7 +37,7 @@ func (c *Context) Render(msg, ctrl, action string) *Response {
 
 // RenderMenu displays a menu and does appropriate routing to
 // user's response.
-func (c *Context) RenderMenu(menu *Menu) *Response {
+func (c Context) RenderMenu(menu *Menu) Response {
 	b, err := json.Marshal(menu)
 	if err != nil {
 		return c.Err(err)
@@ -47,7 +47,7 @@ func (c *Context) RenderMenu(menu *Menu) *Response {
 }
 
 // RenderForm starts the form input collection process.
-func (c *Context) RenderForm(form *Form, ctrl, action string) *Response {
+func (c Context) RenderForm(form *Form, ctrl, action string) Response {
 	form.Route = route{StrTrim(ctrl), StrTrim(action)}
 	b, err := json.Marshal(form)
 	if err != nil {
@@ -58,15 +58,15 @@ func (c *Context) RenderForm(form *Form, ctrl, action string) *Response {
 }
 
 // Redirect to another route to continue processing request.
-func (c *Context) Redirect(ctrl, action string) *Response {
-	r := new(Response)
+func (c Context) Redirect(ctrl, action string) Response {
+	r := Response{}
 	r.route = route{StrTrim(ctrl), StrTrim(action)}
 	r.redirect = true
 	return r
 }
 
 // Err releases USSD session with an error message.
-func (c *Context) Err(err error) *Response {
+func (c Context) Err(err error) Response {
 	r := c.Release("Sorry, something went wrong")
 	r.err = err
 	return r
