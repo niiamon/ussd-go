@@ -37,7 +37,7 @@ func (d demo) GreetMe(c *Context) Response {
 	return c.Release(msg)
 }
 
-func (d *demo) Exit(c *Context) Response {
+func (d demo) Exit(c *Context) Response {
 	return c.Release("Bye bye.")
 }
 
