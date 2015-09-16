@@ -19,10 +19,11 @@ func (d demo) Menu(c *Context) Response {
 
 func (d demo) GreetMeForm(c *Context) Response {
 	form := NewForm("Greet Me")
-	form.AddInput("Name", StrEmpty)
-	form.AddInput("Sex", StrEmpty,
-		NewOption("M", "Male"),
-		NewOption("F", "Female"))
+	form.Input("Name", StrEmpty)
+	form.Input("Sex", StrEmpty,
+		form.Option("M", "Male"),
+		form.Option("F", "Female"))
+	form.Input("Age", StrEmpty).Validate("integer")
 	return c.RenderForm(form, "demo", "GreetMe")
 }
 

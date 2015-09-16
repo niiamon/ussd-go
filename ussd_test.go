@@ -33,7 +33,7 @@ func (u *UssdSuite) SetupSuite() {
 // 	u.ussd.end()
 // }
 
-func (u *UssdSuite) TestUssd() {
+func (u UssdSuite) TestUssd() {
 
 	u.Equal(1, len(u.ussd.middlewares))
 	u.Equal(2, len(u.ussd.ctrls))
@@ -52,6 +52,16 @@ func (u *UssdSuite) TestUssd() {
 	u.Contains(response.Message, "Select Sex")
 
 	u.request.Message = "1"
+	response = u.ussd.process(u.request)
+	u.False(response.Release)
+	u.Contains(response.Message, "Enter Age")
+
+	u.request.Message = "twenty"
+	response = u.ussd.process(u.request)
+	u.False(response.Release)
+	u.Contains(response.Message, "integer")
+
+	u.request.Message = "29"
 	response = u.ussd.process(u.request)
 	u.True(response.Release)
 	u.Contains(response.Message, "Master Samora")

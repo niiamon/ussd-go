@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
+	"github.com/samora/ussd-go/validator"
 )
 
 type core struct {
@@ -53,10 +55,13 @@ func (cr core) FormInputDisplay(c *Context) Response {
 		displayName = input.DisplayName
 	}
 	msg := StrEmpty
-	if StrTrim(form.Title) != StrEmpty {
+	if form.Title != StrEmpty {
 		msg += form.Title + StrNewLine
 	}
-	if !input.HasOptions() {
+	if form.ValidationMessage != StrEmpty {
+		msg += form.ValidationMessage
+	}
+	if !input.hasOptions() {
 		msg += fmt.Sprintf("Enter %v:"+StrNewLine, displayName)
 	} else {
 		msg += fmt.Sprintf("Select %v:"+StrNewLine, displayName)
@@ -84,6 +89,17 @@ func (cr core) FormInputProcessor(c *Context) Response {
 	if err != nil {
 		return c.Err(err)
 	}
+	if len(input.Validators) != 0 {
+		err = validateInput(input, value)
+		if err != nil {
+			form.ValidationMessage = err.Error()
+			err = saveForm(c, form)
+			if err != nil {
+				return c.Err(err)
+			}
+			return c.Redirect("core", "FormInputDisplay")
+		}
+	}
 	form.Data[key] = value
 	if form.ProcessingPosition == len(form.Inputs)-1 {
 		c.DataBag.Delete(coredataForm)
@@ -91,11 +107,10 @@ func (cr core) FormInputProcessor(c *Context) Response {
 		return c.Redirect(form.Route.Ctrl, form.Route.Action)
 	}
 	form.ProcessingPosition++
-	b, err := json.Marshal(form)
+	err = saveForm(c, form)
 	if err != nil {
 		return c.Err(err)
 	}
-	c.DataBag.Set(coredataForm, string(b))
 	return c.Redirect("core", "FormInputDisplay")
 }
 
@@ -112,8 +127,16 @@ func getForm(c *Context) (*Form, error) {
 	return form, nil
 }
 
-func getFormInputValue(c *Context, input *Input) (string, error) {
-	if !input.HasOptions() {
+func saveForm(c *Context, f *Form) error {
+	b, err := json.Marshal(f)
+	if err != nil {
+		return err
+	}
+	return c.DataBag.Set(coredataForm, string(b))
+}
+
+func getFormInputValue(c *Context, input input) (string, error) {
+	if !input.hasOptions() {
 		return c.Request.Message, nil
 	}
 	errNotExist := fmt.Errorf(
@@ -126,4 +149,15 @@ func getFormInputValue(c *Context, input *Input) (string, error) {
 		return StrEmpty, errNotExist
 	}
 	return input.Options[choice-1].Value, nil
+}
+
+func validateInput(i input, value string) error {
+	for _, vData := range i.Validators {
+		f := validator.Map[vData.Key]
+		err := f(i.Name, value, vData.Args...)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

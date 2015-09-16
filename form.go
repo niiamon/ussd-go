@@ -1,27 +1,29 @@
 package ussd
 
+import "github.com/samora/ussd-go/validator"
+
 // Form is a USSD form.
 type Form struct {
-	Title              string
-	Route              route
-	ProcessingPosition int
-	Data               map[string]string
-	Inputs             []*Input
+	Title, ValidationMessage string
+	Route                    route
+	ProcessingPosition       int
+	Data                     map[string]string
+	Inputs                   []input
 }
 
 // NewForm creates a new form.
 func NewForm(title string) *Form {
 	return &Form{
-		Title:  title,
+		Title:  StrTrim(title),
 		Data:   make(map[string]string),
-		Inputs: make([]*Input, 0),
+		Inputs: make([]input, 0),
 	}
 }
 
-// AddInput adds an input to USSD form.
-func (f *Form) AddInput(name, displayName string,
-	options ...*Option) *Form {
-	input := NewInput(name, displayName)
+// Input adds an input to USSD form.
+func (f *Form) Input(name, displayName string,
+	options ...option) *Form {
+	input := newInput(StrTrim(name), StrTrim(displayName))
 	for _, option := range options {
 		input.Options = append(input.Options, option)
 	}
@@ -29,34 +31,56 @@ func (f *Form) AddInput(name, displayName string,
 	return f
 }
 
-// Input for USSD form.
-type Input struct {
-	Name, DisplayName string
-	Options           []*Option
+func (f *Form) Validate(validatorKey string, args ...string) *Form {
+	validatorKey = StrTrim(StrLower(validatorKey))
+	if _, ok := validator.Map[validatorKey]; !ok {
+		panic(&ValidatorDoesNotExistError{validatorKey})
+	}
+	i := len(f.Inputs) - 1
+	input := f.Inputs[i]
+	input.Validators = append(input.Validators, validatorData{
+		Key:  validatorKey,
+		Args: args,
+	})
+	f.Inputs[i] = input
+	return f
 }
 
-// NewInput creates new form input.
-func NewInput(name, displayName string) *Input {
-	return &Input{
-		Name:        name,
-		DisplayName: displayName,
-		Options:     make([]*Option, 0),
+// Option creates a USSD input option.
+func (f Form) Option(value, displayValue string) option {
+	return option{
+		Value: StrTrim(value), DisplayValue: StrTrim(displayValue),
 	}
 }
 
-// HasOptions checks if input has options.
-func (i Input) HasOptions() bool {
-	return len(i.Options) > 0
+// input for USSD form.
+type input struct {
+	Name, DisplayName string
+	Options           []option
+	Validators        []validatorData
 }
 
-// Option for USSD form select field.
-type Option struct {
+// option for input
+type option struct {
 	Value, DisplayValue string
 }
 
-// NewOption create a USSD input option.
-func NewOption(value, displayValue string) *Option {
-	return &Option{
-		Value: value, DisplayValue: displayValue,
+type validatorData struct {
+	Key  string
+	Args []string
+}
+
+// newInput creates new form input.
+func newInput(name, displayName string) input {
+	return input{
+		Name:        name,
+		DisplayName: displayName,
+		Options:     make([]option, 0),
+		Validators:  make([]validatorData, 0),
 	}
+}
+
+// hasOptions checks if input has options.
+func (i input) hasOptions() bool {
+	return len(i.Options) > 0
 }
