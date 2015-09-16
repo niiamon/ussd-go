@@ -1,7 +1,15 @@
 {
 	"ImportPath": "github.com/samora/ussd-go",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.5.1",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
+		{
+			"ImportPath": "github.com/asaskevich/govalidator",
+			"Comment": "v2",
+			"Rev": "5fe52de9fffecc6df9539fcfd6ac6ae6aa6fc626"
+		},
 		{
 			"ImportPath": "github.com/fzzy/radix/redis",
 			"Comment": "v0.5.6",

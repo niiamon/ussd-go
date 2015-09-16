@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/asaskevich/govalidator"
+	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/asaskevich/govalidator"
 )
 
 type Validator func(string, string, ...string) error
