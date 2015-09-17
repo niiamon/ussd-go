@@ -1,9 +1,9 @@
 package ussd
 
-type ValidatorDoesNotExistError struct {
+type validatorDoesNotExistError struct {
 	Key string
 }
 
-func (s ValidatorDoesNotExistError) Error() string {
+func (s validatorDoesNotExistError) Error() string {
 	return s.Key + " validator does not exist"
 }

@@ -7,6 +7,16 @@ import (
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/asaskevich/govalidator"
 )
 
+// Map contains all validators
+var Map = map[string]Validator{
+	"length":  Length,
+	"numeric": Numeric,
+	"integer": Integer,
+	"float":   Float,
+	"range":   Range,
+}
+
+// Validator is the function signature for validators
 type Validator func(string, string, ...string) error
 
 // Length verifies min <= value <= max.
@@ -56,7 +66,29 @@ func Numeric(name, value string, args ...string) error {
 // Float verifies value is a float/decimal number
 func Float(name, value string, args ...string) error {
 	if ok := govalidator.IsFloat(value); !ok {
-		return fmt.Errorf("%s must be a float/decimal number")
+		return fmt.Errorf("%s must be a float/decimal number", name)
+	}
+	return nil
+}
+
+func Range(name, value string, args ...string) error {
+	if len(args) != 2 {
+		panic(errors.New("Min and max must be specified"))
+	}
+	v, err := govalidator.ToFloat(value)
+	if err != nil {
+		return err
+	}
+	min, err := govalidator.ToFloat(args[0])
+	if err != nil {
+		return err
+	}
+	max, err := govalidator.ToFloat(args[1])
+	if err != nil {
+		return err
+	}
+	if ok := govalidator.InRange(v, min, max); !ok {
+		return fmt.Errorf("%f must range from %f to %f", name, min, max)
 	}
 	return nil
 }

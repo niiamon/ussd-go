@@ -34,7 +34,7 @@ func (f *Form) Input(name, displayName string,
 func (f *Form) Validate(validatorKey string, args ...string) *Form {
 	validatorKey = StrTrim(StrLower(validatorKey))
 	if _, ok := validator.Map[validatorKey]; !ok {
-		panic(&ValidatorDoesNotExistError{validatorKey})
+		panic(&validatorDoesNotExistError{validatorKey})
 	}
 	i := len(f.Inputs) - 1
 	input := f.Inputs[i]
