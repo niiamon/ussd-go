@@ -42,6 +42,9 @@ func Length(name, value string, args ...string) error {
 		if max == 0 {
 			return fmt.Errorf("%s must have min length of %d", name, min)
 		}
+		if min == max {
+			fmt.Errorf("%s must have length %d", name, max)
+		}
 		return fmt.Errorf("%s must have length ranging from %d to %d", name, min, max)
 	}
 	return nil
