@@ -59,7 +59,7 @@ func (cr core) FormInputDisplay(c *Context) Response {
 		msg += form.Title + StrNewLine
 	}
 	if form.ValidationMessage != StrEmpty {
-		msg += form.ValidationMessage
+		msg += form.ValidationMessage + StrNewLine
 	}
 	if !input.hasOptions() {
 		msg += fmt.Sprintf("Enter %v:"+StrNewLine, displayName)

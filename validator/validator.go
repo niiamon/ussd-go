@@ -42,7 +42,7 @@ func Length(name, value string, args ...string) error {
 		if max == 0 {
 			return fmt.Errorf("%s must have min length of %d", name, min)
 		}
-		return fmt.Errorf("%s must have length %d to %d", name, min, max)
+		return fmt.Errorf("%s must have length ranging from %d to %d", name, min, max)
 	}
 	return nil
 }
@@ -58,7 +58,7 @@ func Integer(name, value string, args ...string) error {
 // Numeric verifies value only contains chars +,-,0-9
 func Numeric(name, value string, args ...string) error {
 	if ok := govalidator.IsNumeric(value); !ok {
-		return fmt.Errorf("%s can only contain numbers", name)
+		return fmt.Errorf("%s must contain only numbers", name)
 	}
 	return nil
 }
@@ -66,11 +66,12 @@ func Numeric(name, value string, args ...string) error {
 // Float verifies value is a float/decimal number
 func Float(name, value string, args ...string) error {
 	if ok := govalidator.IsFloat(value); !ok {
-		return fmt.Errorf("%s must be a float/decimal number", name)
+		return fmt.Errorf("%s must be a float/decimal", name)
 	}
 	return nil
 }
 
+// Range verifies value falls in range provided
 func Range(name, value string, args ...string) error {
 	if len(args) != 2 {
 		panic(errors.New("Min and max must be specified"))
@@ -88,7 +89,7 @@ func Range(name, value string, args ...string) error {
 		return err
 	}
 	if ok := govalidator.InRange(v, min, max); !ok {
-		return fmt.Errorf("%f must range from %f to %f", name, min, max)
+		return fmt.Errorf("%s must range from %f to %f", name, min, max)
 	}
 	return nil
 }

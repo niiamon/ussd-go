@@ -1,6 +1,6 @@
 # ussd-go
 
-__NOTE__: Still under development.
+__NOTE__: Under active development. API is unstable
 
 [Go](http://golang.org) lib for building USSD applications.
 
