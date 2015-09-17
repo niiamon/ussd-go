@@ -2,7 +2,6 @@ package ussd
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -23,18 +22,14 @@ func (cr core) MenuProcessor(c *Context) Response {
 	if err != nil {
 		return c.Err(err)
 	}
-	errNotInMenu := errors.New(
-		c.Request.Message + " is not in menu options.")
+	errMsg := c.Request.Message + " is not an option"
 	choice, err := strconv.ParseInt(c.Request.Message, 10, 8)
-	if err != nil {
-		return c.Err(errNotInMenu)
+	if err != nil || int(choice) > len(menu.Items) || int(choice) < 0 {
+		return c.Release(errMsg)
 	}
 	if choice == 0 && menu.ZeroItem != nil {
 		return c.Redirect(menu.ZeroItem.Route.Ctrl,
 			menu.ZeroItem.Route.Action)
-	}
-	if int(choice) > len(menu.Items) {
-		return c.Err(errNotInMenu)
 	}
 	item := menu.Items[choice-1]
 	c.DataBag.Delete(coredataMenu)
