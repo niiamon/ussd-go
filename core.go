@@ -100,6 +100,7 @@ func (cr core) FormInputProcessor(c *Context) Response {
 			return c.Redirect("core", "FormInputDisplay")
 		}
 	}
+	form.ValidationMessage = StrEmpty
 	form.Data[key] = value
 	if form.ProcessingPosition == len(form.Inputs)-1 {
 		c.DataBag.Delete(coredataForm)
