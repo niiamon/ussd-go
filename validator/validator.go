@@ -92,7 +92,7 @@ func Range(name, value string, args ...string) error {
 		return err
 	}
 	if ok := govalidator.InRange(v, min, max); !ok {
-		return fmt.Errorf("%s must range from %f to %f", name, min, max)
+		return fmt.Errorf("%s must range from %.2f to %.2f", name, min, max)
 	}
 	return nil
 }
