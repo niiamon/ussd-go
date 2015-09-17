@@ -43,7 +43,7 @@ func Length(name, value string, args ...string) error {
 			return fmt.Errorf("%s must have min length of %d", name, min)
 		}
 		if min == max {
-			return fmt.Errorf("%s must have length %d", name, max)
+			return fmt.Errorf("%s must have length of %d", name, max)
 		}
 		return fmt.Errorf("%s must have length ranging from %d to %d", name, min, max)
 	}
@@ -61,7 +61,7 @@ func Integer(name, value string, args ...string) error {
 // Numeric verifies value only contains chars +,-,0-9
 func Numeric(name, value string, args ...string) error {
 	if ok := govalidator.IsNumeric(value); !ok {
-		return fmt.Errorf("%s must contain only numbers", name)
+		return fmt.Errorf("%s must only contain numbers", name)
 	}
 	return nil
 }
