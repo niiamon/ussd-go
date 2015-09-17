@@ -7,13 +7,11 @@ import (
 // Menu for USSD
 type Menu struct {
 	Header, Footer string
-	Items          []*MenuItem
-	ZeroItem       *MenuItem
+	Items          []*menuItem
+	ZeroItem       *menuItem
 }
 
-// MenuItem is an item to be displayed on USSD menu.
-// Usually not used directly. Use `(*Menu).AddItem` or `(*Menu).AddZeroItem`.
-type MenuItem struct {
+type menuItem struct {
 	Name  string
 	Route route
 }
@@ -21,13 +19,13 @@ type MenuItem struct {
 // NewMenu creates a new Menu
 func NewMenu() *Menu {
 	return &Menu{
-		Items: make([]*MenuItem, 0),
+		Items: make([]*menuItem, 0),
 	}
 }
 
 // AddItem to USSD menu.
 func (m *Menu) AddItem(name, ctrl, action string) *Menu {
-	item := &MenuItem{name, route{ctrl, action}}
+	item := &menuItem{name, route{ctrl, action}}
 	m.Items = append(m.Items, item)
 	return m
 }
@@ -35,7 +33,7 @@ func (m *Menu) AddItem(name, ctrl, action string) *Menu {
 // AddZeroItem adds an item at the bottom of USSD menu.
 // This item always routes to a choice of "0".
 func (m *Menu) AddZeroItem(name, ctrl, action string) *Menu {
-	m.ZeroItem = &MenuItem{name, route{ctrl, action}}
+	m.ZeroItem = &menuItem{name, route{ctrl, action}}
 	return m
 }
 

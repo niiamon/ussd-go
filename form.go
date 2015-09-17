@@ -7,7 +7,7 @@ type Form struct {
 	Title, ValidationMessage string
 	Route                    route
 	ProcessingPosition       int
-	Data                     map[string]string
+	Data                     FormData
 	Inputs                   []input
 }
 
@@ -15,7 +15,7 @@ type Form struct {
 func NewForm(title string) *Form {
 	return &Form{
 		Title:  StrTrim(title),
-		Data:   make(map[string]string),
+		Data:   make(FormData),
 		Inputs: make([]input, 0),
 	}
 }
@@ -31,6 +31,7 @@ func (f *Form) Input(name, displayName string,
 	return f
 }
 
+// Validate input. See validator.Map for available validators.
 func (f *Form) Validate(validatorKey string, args ...string) *Form {
 	validatorKey = StrTrim(StrLower(validatorKey))
 	if _, ok := validator.Map[validatorKey]; !ok {
@@ -53,14 +54,12 @@ func (f Form) Option(value, displayValue string) option {
 	}
 }
 
-// input for USSD form.
 type input struct {
 	Name, DisplayName string
 	Options           []option
 	Validators        []validatorData
 }
 
-// option for input
 type option struct {
 	Value, DisplayValue string
 }
@@ -70,7 +69,6 @@ type validatorData struct {
 	Args []string
 }
 
-// newInput creates new form input.
 func newInput(name, displayName string) input {
 	return input{
 		Name:        name,
@@ -80,7 +78,6 @@ func newInput(name, displayName string) input {
 	}
 }
 
-// hasOptions checks if input has options.
 func (i input) hasOptions() bool {
 	return len(i.Options) > 0
 }
