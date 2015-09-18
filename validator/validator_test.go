@@ -10,16 +10,16 @@ func TestLength(t *testing.T) {
 	assert := assert.New(t)
 	f := Map["length"]
 
-	err := f("Full Name", "Samora", "10")
+	err := f("Samora", "10")
 	assert.Error(err)
 
-	err = f("Full Name", "Samora Dake", "10")
+	err = f("Samora Dake", "10")
 	assert.Nil(err)
 
-	err = f("PIN", "1234", "4", "4")
+	err = f("1234", "4", "4")
 	assert.Nil(err)
 
-	err = f("PIN", "12345", "4", "4")
+	err = f("12345", "4", "4")
 	assert.Error(err)
 }
 
@@ -27,9 +27,9 @@ func TestRange(t *testing.T) {
 	assert := assert.New(t)
 	f := Map["range"]
 
-	err := f("Age", "15", "18", "35")
+	err := f("15", "18", "35")
 	assert.Error(err)
 
-	err = f("Age", "18", "18", "35")
+	err = f("18", "18", "35")
 	assert.Nil(err)
 }

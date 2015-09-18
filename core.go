@@ -150,7 +150,7 @@ func getFormInputValue(c *Context, input input) (string, error) {
 func validateInput(i input, value string) error {
 	for _, vData := range i.Validators {
 		f := validator.Map[vData.Key]
-		err := f(i.Name, value, vData.Args...)
+		err := f(value, vData.Args...)
 		if err != nil {
 			return err
 		}

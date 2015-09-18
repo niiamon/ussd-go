@@ -17,12 +17,12 @@ var Map = map[string]Validator{
 }
 
 // Validator is the function signature for validators
-type Validator func(string, string, ...string) error
+type Validator func(string, ...string) error
 
 // Length verifies min <= value <= max.
 // Where min and max are first and second args respectively.
 // max is optional
-func Length(name, value string, args ...string) error {
+func Length(value string, args ...string) error {
 	if len(args) == 0 {
 		panic(errors.New("Invalid args. Min length must be specified"))
 	}
@@ -40,42 +40,42 @@ func Length(name, value string, args ...string) error {
 	length := int64(len(value))
 	if length < min || (max != 0 && length > max) {
 		if max == 0 {
-			return fmt.Errorf("%s must have min length of %d", name, min)
+			return fmt.Errorf("Must have min length of %d", min)
 		}
 		if min == max {
-			return fmt.Errorf("%s must have length of %d", name, max)
+			return fmt.Errorf("Must have length of %d", max)
 		}
-		return fmt.Errorf("%s must have length ranging from %d to %d", name, min, max)
+		return fmt.Errorf("Must have length ranging from %d to %d", min, max)
 	}
 	return nil
 }
 
 // Integer verifies value is a valid integer
-func Integer(name, value string, args ...string) error {
+func Integer(value string, args ...string) error {
 	if ok := govalidator.IsInt(value); !ok {
-		return fmt.Errorf("%s must be an integer", name)
+		return errors.New("Must be an integer")
 	}
 	return nil
 }
 
 // Numeric verifies value only contains chars +,-,0-9
-func Numeric(name, value string, args ...string) error {
+func Numeric(value string, args ...string) error {
 	if ok := govalidator.IsNumeric(value); !ok {
-		return fmt.Errorf("%s must only contain numbers", name)
+		return errors.New("Must only contain numbers")
 	}
 	return nil
 }
 
 // Float verifies value is a float/decimal number
-func Float(name, value string, args ...string) error {
+func Float(value string, args ...string) error {
 	if ok := govalidator.IsFloat(value); !ok {
-		return fmt.Errorf("%s must be a float/decimal", name)
+		return errors.New("Must be a float/decimal")
 	}
 	return nil
 }
 
 // Range verifies value falls in range provided
-func Range(name, value string, args ...string) error {
+func Range(value string, args ...string) error {
 	if len(args) != 2 {
 		panic(errors.New("Min and max must be specified"))
 	}
@@ -92,7 +92,7 @@ func Range(name, value string, args ...string) error {
 		return err
 	}
 	if ok := govalidator.InRange(v, min, max); !ok {
-		return fmt.Errorf("%s must range from %.2f to %.2f", name, min, max)
+		return fmt.Errorf("Must range from %.2f to %.2f", min, max)
 	}
 	return nil
 }
