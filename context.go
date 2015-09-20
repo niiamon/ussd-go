@@ -43,7 +43,7 @@ func (c Context) RenderMenu(menu *Menu) Response {
 		return c.Err(err)
 	}
 	c.DataBag.Set(coredataMenu, string(b))
-	return c.Render(menu.Render(), "core", "MenuProcessor")
+	return c.Render(menu.render(), "core", "MenuProcessor")
 }
 
 // RenderForm starts the form input collection process.

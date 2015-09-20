@@ -23,22 +23,22 @@ func NewMenu() *Menu {
 	}
 }
 
-// AddItem to USSD menu.
-func (m *Menu) AddItem(name, ctrl, action string) *Menu {
+// Add to USSD menu.
+func (m *Menu) Add(name, ctrl, action string) *Menu {
 	item := &menuItem{name, route{ctrl, action}}
 	m.Items = append(m.Items, item)
 	return m
 }
 
-// AddZeroItem adds an item at the bottom of USSD menu.
+// AddZero adds an item at the bottom of USSD menu.
 // This item always routes to a choice of "0".
-func (m *Menu) AddZeroItem(name, ctrl, action string) *Menu {
+func (m *Menu) AddZero(name, ctrl, action string) *Menu {
 	m.ZeroItem = &menuItem{name, route{ctrl, action}}
 	return m
 }
 
-// Render USSD menu.
-func (m Menu) Render() string {
+// render USSD menu.
+func (m Menu) render() string {
 	msg := StrEmpty
 	if m.Header != StrEmpty {
 		msg += m.Header + StrNewLine
