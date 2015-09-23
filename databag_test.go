@@ -15,6 +15,11 @@ type DataBagSuite struct {
 	key, value string
 }
 
+type testStructValue struct {
+	Name string
+	Age  int
+}
+
 func (d *DataBagSuite) SetupSuite() {
 	d.store = sessionstores.NewRedis("localhost:6379")
 	err := d.store.Connect()
@@ -61,6 +66,16 @@ func (d *DataBagSuite) TestDataBag() {
 	exists, err = d.store.HashExists(name)
 	d.Nil(err)
 	d.False(exists)
+
+	v := &testStructValue{Name: "Samora", Age: 29}
+	err = d.databag.SetMarshal("user", v)
+	d.Nil(err)
+
+	v = new(testStructValue)
+	err = d.databag.GetUnmarshal("user", v)
+	d.Nil(err)
+	d.Equal("Samora", v.Name)
+	d.Equal(29, v.Age)
 }
 
 func TestDataBagSuite(t *testing.T) {
