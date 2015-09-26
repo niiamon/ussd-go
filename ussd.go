@@ -1,11 +1,10 @@
 package ussd
 
 import (
+	"github.com/samora/ussd-go/sessionstores"
 	"log"
 	"reflect"
 	"regexp"
-
-	"github.com/samora/ussd-go/sessionstores"
 )
 
 // Middleware func
@@ -33,23 +32,23 @@ type Response struct {
 
 // Ussd sets up USSD.
 type Ussd struct {
-	initialRoute    route
-	session         *session
-	store           sessionstores.Store
-	middlewares     []Middleware
-	ctrls           map[string]interface{}
-	context         *Context
-	initiationRegex *regexp.Regexp
+	initialRoute     route
+	session          *session
+	store            sessionstores.Store
+	middlewares      []Middleware
+	ctrls            map[string]interface{}
+	context          *Context
+	initiationRegexp *regexp.Regexp
 }
 
 // New USSD
 func New(store sessionstores.Store, ctrl, action string) *Ussd {
 	u := &Ussd{
-		initialRoute:    route{StrTrim(ctrl), StrTrim(action)},
-		store:           store,
-		middlewares:     make([]Middleware, 0),
-		ctrls:           make(map[string]interface{}),
-		initiationRegex: regexp.MustCompile(`^\*\d+[\*|#]`),
+		initialRoute:     route{StrTrim(ctrl), StrTrim(action)},
+		store:            store,
+		middlewares:      make([]Middleware, 0),
+		ctrls:            make(map[string]interface{}),
+		initiationRegexp: regexp.MustCompile(`^\*\d+[\*|#]`),
 	}
 	u.Ctrl(new(core))
 	return u
@@ -128,7 +127,7 @@ func (u Ussd) exec() Response {
 		u.end()
 		return Response{}
 	}
-	if u.initiationRegex.MatchString(u.context.Request.Message) == true {
+	if u.initiationRegexp.MatchString(u.context.Request.Message) == true {
 		return u.onInitiation()
 	}
 	return u.onResponse()

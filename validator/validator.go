@@ -3,7 +3,6 @@ package validator
 import (
 	"errors"
 	"fmt"
-
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/asaskevich/govalidator"
 )
 

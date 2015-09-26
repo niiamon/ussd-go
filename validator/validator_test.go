@@ -1,9 +1,8 @@
 package validator
 
 import (
-	"testing"
-
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestLength(t *testing.T) {

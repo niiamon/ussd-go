@@ -1,9 +1,8 @@
 package sessionstores
 
 import (
-	"testing"
-
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/suite"
+	"testing"
 )
 
 func TestRedis(t *testing.T) {

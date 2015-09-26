@@ -1,10 +1,9 @@
 package ussd
 
 import (
-	"testing"
-
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/stretchr/testify/suite"
 	"github.com/samora/ussd-go/sessionstores"
+	"testing"
 )
 
 type DataBagSuite struct {
@@ -68,11 +67,11 @@ func (d *DataBagSuite) TestDataBag() {
 	d.False(exists)
 
 	v := &testStructValue{Name: "Samora", Age: 29}
-	err = d.databag.SetMarshal("user", v)
+	err = d.databag.SetMarshaled("user", v)
 	d.Nil(err)
 
 	v = new(testStructValue)
-	err = d.databag.GetUnmarshal("user", v)
+	err = d.databag.GetUnmarshaled("user", v)
 	d.Nil(err)
 	d.Equal("Samora", v.Name)
 	d.Equal(29, v.Age)

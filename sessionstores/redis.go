@@ -2,9 +2,8 @@ package sessionstores
 
 import (
 	"errors"
-	"log"
-
 	"github.com/samora/ussd-go/Godeps/_workspace/src/github.com/fzzy/radix/redis"
+	"log"
 )
 
 // Redis session store. See http://redis.io

@@ -47,7 +47,7 @@ func (d DataBag) Clear() error {
 }
 
 // SetMarshal marshals v into json and puts in databag
-func (d DataBag) SetMarshal(key string, v interface{}) error {
+func (d DataBag) SetMarshaled(key string, v interface{}) error {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (d DataBag) SetMarshal(key string, v interface{}) error {
 }
 
 // GetUnmarshal retrieves json from databag and unmarshals into v
-func (d DataBag) GetUnmarshal(key string, v interface{}) error {
+func (d DataBag) GetUnmarshaled(key string, v interface{}) error {
 	str, err := d.Get(key)
 	if err != nil {
 		return err
