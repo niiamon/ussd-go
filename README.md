@@ -1,9 +1,7 @@
 # ussd-go
 
-__NOTE__: Under active development. API is unstable
+Easily build USSD apps in [Go](http://golang.org).
 
-[Go](http://golang.org) lib for building USSD applications.
-
- Easily build USSD apps for the following USSD providers:
+Supported USSD providers (Ghana):
 * [SMSGH](http://developers.smsgh.com/documentations/ussd)
 * [Nsano](http://nsano.com/solutions/a8/software-for-telecommunications-media-institutions/)
